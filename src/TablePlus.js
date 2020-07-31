@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 
 import { TextButton } from '@getflywheel/local-components';
 import is from 'electron-is';
@@ -24,7 +24,7 @@ export default class TablePlus extends React.Component {
 	 * @param  {Object} props The properties from the <TablePlus> component from renderer.js.
 	 */
 	constructor( props ) {
-		super( props );
+		super( props ); // eleveate the props to this.
 	}
 
 	/**
@@ -49,6 +49,34 @@ export default class TablePlus extends React.Component {
 	}
 
 	/**
+	 * Symlink a file to another.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @param  {string} to   Target file.
+	 * @param  {string} from Source file.
+	 */
+	symlink( to, from ) {
+		fs.symlinkSync( to, from, 'file', this.doNothing );
+	}
+
+	/**
+	 * Unlink a file then run a callback.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @param  {string} file   File to unlink.
+	 * @param  {Function} then Callback.
+	 */
+	unlinkThen( file, then ) {
+		if ( fs.existsSync( file ) ) {
+			fs.unlink( file, ( err ) => this.doNothing );
+		}
+
+		then();
+	}
+
+	/**
 	 * After a set amount of time remove the /tmp/mysql.sock file so it can be used for other connections.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
@@ -66,9 +94,19 @@ export default class TablePlus extends React.Component {
 	 * @since  1.0.0
 	 */
 	symlinkTmpSock() {
-		fs.unlink( '/tmp/mysql.sock', ( err ) => {
-			fs.symlinkSync( this.getSockFile(), '/tmp/mysql.sock', 'file', () => this.doNothing );
-		} );
+		this.unlinkThen( '/tmp/mysql.sock', () => this.symlink( this.getSockFile(), '/tmp/mysql.sock' ) );
+	}
+
+	/**
+	 * Symlink the /tmp/mysql.sock file and call back.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @param  {Function} callback The callback to run after.
+	 */
+	symlinkTmpSockThen( then ) {
+		this.symlinkTmpSock();
+		then();
 	}
 
 	/**
@@ -85,13 +123,31 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since 1.0.0
-	 * @param  {Function} callback The callback to call when we prepare the .sock connection.
+	 * @param  {Function} then The callback to call when we prepare the .sock connection.
 	 */
-	connectToSocketThen( callback ) {
-		fs.access( '/tmp/mysql.sock', fs.constants.F_OK, ( err ) => {
-			this.symlinkTmpSock();
-			callback();
-		} );
+	connectToSocketThen( then ) {
+		fs.access( '/tmp/mysql.sock', fs.constants.F_OK, ( err ) => this.symlinkTmpSockThen( then ) );
+	}
+
+	/**
+	 * The mysql:// URI that Table Plus will open.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @return {string}
+	 */
+	getTablePlusURI() {
+		return `mysql://${this.props.site.mysql.user}:${this.props.site.mysql.password}@localhost/${this.props.site.mysql.database}?enviroment=local&name=${this.props.site.name}&safeModeLevel=0&advancedSafeModeLevel=0`;
+	}
+
+	/**
+	 * Open the mysql:// URI that Table Plus will open.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 */
+	openURI() {
+		exec( `open "${this.getTablePlusURI()}"`, () => this.relieveTmpSockFileAfter( 2000 ) );
 	}
 
 	/**
@@ -104,11 +160,7 @@ export default class TablePlus extends React.Component {
 	 * @since 1.0.0
 	 */
 	openTablePlus() {
-		this.connectToSocketThen( () => {
-			let uri = `mysql://${this.props.site.mysql.user}:${this.props.site.mysql.password}@localhost/${this.props.site.mysql.database}`;
-
-			exec( `open "${uri}"`, () => this.relieveTmpSockFileAfter( 5000 ) );
-		} );
+		this.connectToSocketThen( () => this.openURI() );
 	}
 
 	/**
