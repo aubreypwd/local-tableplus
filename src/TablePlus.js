@@ -1,7 +1,8 @@
 import React from 'react';
 import { TextButton } from '@getflywheel/local-components';
-
 import is from 'electron-is';
+
+const fs = require( 'fs' );
 
 export default class TablePlus extends React.Component {
 	constructor( props ) {
@@ -21,12 +22,12 @@ export default class TablePlus extends React.Component {
 		return 'Open TablePlus';
 	}
 
-	isMacOs() {
+	isMacOS() {
 		return is.macOS();
 	}
 
 	hasTablePlus() {
-		return false;
+		return fs.existsSync( '/Applications/TablePlus.app' );
 	}
 
 	canConnect() {
