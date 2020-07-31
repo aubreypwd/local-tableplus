@@ -39,6 +39,39 @@ export default class TablePlus extends React.Component {
 	}
 
 	/**
+	 * Just something we can throw at callbacks when we want to do nothing.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 */
+	doNothing() {
+		// Silence is golden.
+	}
+
+	/**
+	 * After a set amount of time remove the /tmp/mysql.sock file so it can be used for other connections.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @param  {number} time Milliseconds.
+	 */
+	relieveTmpSockFileAfter( time ) {
+		setTimeout( () => fs.unlink( '/tmp/mysql.sock', () => this.doNothing() ), time );
+	}
+
+	/**
+	 * Symlink the /tmp/mysql.sock file to the site sock file.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 */
+	symlinkTmpSock() {
+		fs.unlink( '/tmp/mysql.sock', ( err ) => {
+			fs.symlinkSync( this.getSockFile(), '/tmp/mysql.sock', 'file', () => this.doNothing );
+		} );
+	}
+
+	/**
 	 * Connect to the .sock file then call callback.
 	 *
 	 * I had to get creative here, because TablePlus does not accept a socket
@@ -56,16 +89,7 @@ export default class TablePlus extends React.Component {
 	 */
 	connectToSocketThen( callback ) {
 		fs.access( '/tmp/mysql.sock', fs.constants.F_OK, ( err ) => {
-			if ( err ) {
-				console.log( err );
-			}
-
-			fs.unlink( '/tmp/mysql.sock', ( err ) => {
-				fs.symlinkSync( this.getSockFile(), '/tmp/mysql.sock', 'file', ( err ) => {
-					console.log( err );
-				} );
-			} );
-
+			this.symlinkTmpSock();
 			callback();
 		} );
 	}
@@ -83,9 +107,7 @@ export default class TablePlus extends React.Component {
 		this.connectToSocketThen( () => {
 			let uri = `mysql://${this.props.site.mysql.user}:${this.props.site.mysql.password}@localhost/${this.props.site.mysql.database}`;
 
-			exec( `open "${uri}"`, ( err, stdout, stderr ) => {
-				return;
-			} );
+			exec( `open "${uri}"`, () => this.relieveTmpSockFileAfter( 5000 ) );
 		} );
 	}
 
