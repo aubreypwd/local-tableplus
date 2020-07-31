@@ -1,8 +1,6 @@
 import React from 'react';
 import TablePlus from './TablePlus.js';
 
-console.log( 'loaded' );
-
 module.exports = function ( context ) {
 	const hooks = context.hooks;
 

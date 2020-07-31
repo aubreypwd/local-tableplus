@@ -45,6 +45,7 @@
     "@getflywheel/local-components": "^14.0.0",
     "classnames": "^2.2.6",
     "dateformat": "^3.0.3",
+    "electron-is": "~3.0.0",
     "fs-extra": "^9.0.1",
     "prop-types": "^15.6.2",
     "react": "^16.10.2",
