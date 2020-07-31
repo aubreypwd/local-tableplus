@@ -19,11 +19,11 @@
   "bugs": {
     "url": "https://github.com/getflywheel/local-addon-boilerplate/issues"
   },
-  "license": "MIT",
+  "license": "",
   "scripts": {
     "build": "tsc",
     "prepare": "tsc",
-    "watch": "npm run build --watch"
+    "watch": "watchexec 'npm run build'"
   },
   "devDependencies": {
     "@getflywheel/eslint-config-local": "1.0.4",
