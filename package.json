@@ -6,7 +6,7 @@
   "keywords": [
     "local-addon"
   ],
-  "bgColor": "#51bb7b",
+  "bgColor": "#ffffff",
   "icon": "tableplus.png",
   "slug": "local-tableplus",
   "description": "Connect to databases using TablePlus.",
