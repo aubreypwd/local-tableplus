@@ -7,7 +7,7 @@ Note this is for Local by Flywheel "Lightning" 5.x+
 Until this ends up in the community list, you can clone this repo into `~/Library/Application Support/Local/addons/` using:
 
 ```bash
-$ git clone --branch 1.0.0 git@github.com:aubreypwd/local-tableplus.git "~/Library/Application Support/Local/addons/"
+$ git clone --branch 1.0.0 git@github.com:aubreypwd/local-tableplus.git
 ```
 
 ## Development
@@ -15,7 +15,7 @@ $ git clone --branch 1.0.0 git@github.com:aubreypwd/local-tableplus.git "~/Libra
 Just clone the repo into `~/Library/Application Support/Local/addons/` like normal:
 
 ```bash
-$ git clone git@github.com:aubreypwd/local-tableplus.git "~/Library/Application Support/Local/addons/"
+$ git clone git@github.com:aubreypwd/local-tableplus.git
 ```
 
 `master` will be the current development version.
