@@ -1,0 +1,63 @@
+{
+  "name": "local-tableplus",
+  "productName": "TablePlus",
+  "version": "1.0.0",
+  "author": "Local Team",
+  "keywords": [
+    "local-addon"
+  ],
+  "bgColor": "#51bb7b",
+  "icon": "icon.svg",
+  "slug": "local-tableplus",
+  "description": "A quick start to your amazing addon!",
+  "renderer": "lib/renderer.js",
+  "main": "lib/main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getflywheel/local-addon-boilerplate"
+  },
+  "bugs": {
+    "url": "https://github.com/getflywheel/local-addon-boilerplate/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "watch": "yarn run build --watch"
+  },
+  "devDependencies": {
+    "@getflywheel/eslint-config-local": "1.0.4",
+    "@getflywheel/local": "^5.0.0",
+    "@types/classnames": "^2.2.9",
+    "@types/dateformat": "^3.0.1",
+    "@types/node": "^12.7.12",
+    "eslint": "^5.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-react": "^7.11.1",
+    "typescript": "^3.6.4"
+  },
+  "peerDependencies": {
+    "react": ">= 16.4.0",
+    "react-dom": ">= 16.4.0",
+    "react-router-dom": "^4.3.1"
+  },
+  "dependencies": {
+    "@getflywheel/local-components": "^14.0.0",
+    "classnames": "^2.2.6",
+    "dateformat": "^3.0.3",
+    "fs-extra": "^9.0.1",
+    "prop-types": "^15.6.2",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "react-router-dom": "^5.1.2"
+  },
+  "bundledDependencies": [
+    "classnames",
+    "dateformat",
+    "@getflywheel/local-components",
+    "prop-types"
+  ],
+  "engines": {
+    "local-by-flywheel": "^5.0.0"
+  }
+}
