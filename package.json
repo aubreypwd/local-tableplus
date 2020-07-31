@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@getflywheel/local-components": "^14.0.0",
+    "babel-eslint": "~10.1.0",
     "classnames": "^2.2.6",
     "dateformat": "^3.0.3",
     "electron-is": "~3.0.0",
