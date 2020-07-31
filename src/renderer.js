@@ -8,7 +8,7 @@ module.exports = function ( context ) {
 
 	hooks.addContent( 'SiteInfoDatabase_TableList_TableListRow[Connect]:Before', ( site ) => {
 		return (
-			<TablePlus key="tableplus" props={...props} />
+			<TablePlus key="tableplus" site={site} />
 		);
 	} );
 };
