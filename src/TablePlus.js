@@ -49,87 +49,6 @@ export default class TablePlus extends React.Component {
 	}
 
 	/**
-	 * Symlink a file to another.
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  1.0.0
-	 * @param  {string} to   Target file.
-	 * @param  {string} from Source file.
-	 */
-	symlink( to, from ) {
-		fs.symlinkSync( to, from, 'file', this.doNothing );
-	}
-
-	/**
-	 * Unlink a file then run a callback.
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  1.0.0
-	 * @param  {string} file   File to unlink.
-	 * @param  {Function} then Callback.
-	 */
-	unlinkThen( file, then ) {
-		if ( fs.existsSync( file ) ) {
-			fs.unlink( file, ( err ) => this.doNothing );
-		}
-
-		then();
-	}
-
-	/**
-	 * After a set amount of time remove the /tmp/mysql.sock file so it can be used for other connections.
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  1.0.0
-	 * @param  {number} time Milliseconds.
-	 */
-	relieveTmpSockFileAfter( time ) {
-		setTimeout( () => fs.unlink( '/tmp/mysql.sock', () => this.doNothing() ), time );
-	}
-
-	/**
-	 * Symlink the /tmp/mysql.sock file to the site sock file.
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  1.0.0
-	 */
-	symlinkTmpSock() {
-		this.unlinkThen( '/tmp/mysql.sock', () => this.symlink( this.getSockFile(), '/tmp/mysql.sock' ) );
-	}
-
-	/**
-	 * Symlink the /tmp/mysql.sock file and call back.
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  1.0.0
-	 * @param  {Function} callback The callback to run after.
-	 */
-	symlinkTmpSockThen( then ) {
-		this.symlinkTmpSock();
-		then();
-	}
-
-	/**
-	 * Connect to the .sock file then call callback.
-	 *
-	 * I had to get creative here, because TablePlus does not accept a socket
-	 * via the mysql:// URI pattern, but it will connect to /tmp/mysql.sock by default
-	 * if we supply localhost.
-	 *
-	 * This will remove that file, symlink it to the sites socket file, then open
-	 * the mysql:// URI successfully opening TablePlus with the right socket connection.
-	 *
-	 * Once the symlink is made, it will call your callback.
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since 1.0.0
-	 * @param  {Function} then The callback to call when we prepare the .sock connection.
-	 */
-	connectToSocketThen( then ) {
-		fs.access( '/tmp/mysql.sock', fs.constants.F_OK, ( err ) => this.symlinkTmpSockThen( then ) );
-	}
-
-	/**
 	 * The mysql:// URI that Table Plus will open.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
@@ -141,13 +60,35 @@ export default class TablePlus extends React.Component {
 	}
 
 	/**
+	 * After a set amount of time remove the /tmp/mysql.sock file so it can be used for other connections.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @param  {number} time Milliseconds.
+	 */
+	relieveSockFile( time ) {
+		setTimeout( () => fs.unlink( '/tmp/mysql.sock', () => this.doNothing() ), time );
+	}
+
+	/**
 	 * Open the mysql:// URI that Table Plus will open.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.0
 	 */
 	openURI() {
-		exec( `open "${this.getTablePlusURI()}"`, () => this.relieveTmpSockFileAfter( 2000 ) );
+		exec( `open "${this.getTablePlusURI()}"`, () => this.relieveSockFile( 2000 ) );
+	}
+
+	/**
+	 * Symlink the /tmp/mysql.sock file to the site sock file.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 */
+	symlinkSockFile() {
+		fs.unlink( '/tmp/mysql.sock', ( err ) => this.doNothing() );
+		fs.symlinkSync( this.getSockFile(), '/tmp/mysql.sock', 'file', this.doNothing );
 	}
 
 	/**
@@ -160,7 +101,8 @@ export default class TablePlus extends React.Component {
 	 * @since 1.0.0
 	 */
 	openTablePlus() {
-		this.connectToSocketThen( () => this.openURI() );
+		this.symlinkSockFile();
+		this.openURI();
 	}
 
 	/**
@@ -206,7 +148,8 @@ export default class TablePlus extends React.Component {
 	 * @return {boolean}
 	 */
 	canConnect() {
-		return this.isMacOS() && this.hasTablePlus();
+		return this.isMacOS()
+			&& this.hasTablePlus();
 	}
 
 	/**
