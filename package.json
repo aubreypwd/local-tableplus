@@ -7,9 +7,9 @@
     "local-addon"
   ],
   "bgColor": "#51bb7b",
-  "icon": "icon.svg",
+  "icon": "tableplus.png",
   "slug": "local-tableplus",
-  "description": "A quick start to your amazing addon!",
+  "description": "Connect to databases using TablePlus.",
   "renderer": "lib/renderer.js",
   "main": "lib/main.js",
   "repository": {
@@ -19,7 +19,7 @@
   "bugs": {
     "url": "https://github.com/getflywheel/local-addon-boilerplate/issues"
   },
-  "license": "",
+  "license": "GPL",
   "scripts": {
     "build": "tsc",
     "prepare": "tsc",
