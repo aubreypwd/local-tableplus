@@ -1,4 +1,4 @@
-// import React from 'react';
+/* eslint-disable */
 
 import { TextButton } from '@getflywheel/local-components';
 import is from 'electron-is';

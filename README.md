@@ -7,7 +7,13 @@ Note this is for Local by Flywheel "Lightning" 5.x+
 Until this ends up in the community list, you can clone this repo into `~/Library/Application Support/Local/addons/` using:
 
 ```bash
-$ git clone --branch 1.0.0 git@github.com:aubreypwd/local-tableplus.git
+$ git clone git@github.com:aubreypwd/local-tableplus.git
+```
+
+Then, in the addon, run:
+
+```
+npm i
 ```
 
 ## Development
@@ -19,6 +25,8 @@ $ git clone git@github.com:aubreypwd/local-tableplus.git
 ```
 
 `master` will be the current development version.
+
+Then when you run `npm i` you can run `npm run build` or `npm run watch` to develop.
 
 ## Notes
 

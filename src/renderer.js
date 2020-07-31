@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React from 'react';
 import TablePlus from './TablePlus.js';
 
