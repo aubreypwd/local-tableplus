@@ -23,7 +23,7 @@
   "scripts": {
     "build": "tsc",
     "prepare": "tsc",
-    "watch": "yarn run build --watch"
+    "watch": "npm run build --watch"
   },
   "devDependencies": {
     "@getflywheel/eslint-config-local": "1.0.4",
