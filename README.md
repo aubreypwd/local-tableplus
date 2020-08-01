@@ -12,7 +12,7 @@ git clone git@github.com:aubreypwd/local-tableplus.git
 
 Then, in the addon, run:
 
-```
+```bash
 npm i
 ```
 
