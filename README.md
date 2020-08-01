@@ -33,3 +33,11 @@ Then when you run `npm i` you can run `npm run build` or `npm run watch` to deve
 ## Notes
 
 This will override your `/tmp/mysql.sock` file to connect to TablePlus.
+
+-------------------------
+
+# Changelog 
+
+## 1.0.0
+
+First version using TablePlus 3.7.0 (330). This version connects to TablePlus by creating symlink from the site's socket file to `/tmp/mysql.sock` which TablePlus connects by default when invoked via a `mysql://` URI.
