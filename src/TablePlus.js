@@ -32,6 +32,25 @@ export default class TablePlus extends React.Component {
 
 		this.addHooks();
 		this.updateState();
+
+		this.updateInterval();
+	}
+
+	/**
+	 * Update Component on Interval.
+	 *
+	 * I know it's cheap, but the hooks aren't doing it, so
+	 * this will force an update every 1 second.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @return {void} Nothing.
+	 */
+	updateInterval () {
+		setInterval(() => {
+			this.updateState();
+			this.forceUpdate();
+		}, 1000);
 	}
 
 	/**
@@ -60,6 +79,8 @@ export default class TablePlus extends React.Component {
 			style: this.stateButtonStyles(),
 			disabled: !this.siteOn(),
 		};
+
+		this.setState(this.state);
 	}
 
 	/**
