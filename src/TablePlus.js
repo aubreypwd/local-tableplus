@@ -192,8 +192,9 @@ export default class TablePlus extends React.Component {
 	render () {
 		return (
 			<TextButton
+				onClick={this.openTablePlus}
 				style={this.canConnect() ? { ...this.buttonStyles(), ...{	'color': '#ffa600' } } : this.buttonStyles() }
-				disabled={this.canConnect ? 'false' : 'true'}>{this.getButtonLabel()}</TextButton>
+				disabled={!this.canConnect}>{this.getButtonLabel()}</TextButton>
 		);
 	}
 }
