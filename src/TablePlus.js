@@ -44,8 +44,8 @@ export default class TablePlus extends React.Component {
 	 * @return {Void} Nothing
 	 */
 	addHooks () {
-		this.props.context.hooks.addAction('siteStarted', this.updateState);
-		this.props.context.hooks.addAction('siteStopped', this.updateState);
+		this.hooks.addAction('siteStarted', () => this.updateState());
+		this.hooks.addAction('siteStopped', () => this.updateState());
 	}
 
 	/**
