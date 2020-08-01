@@ -161,6 +161,21 @@ export default class TablePlus extends React.Component {
 	}
 
 	/**
+	 * Button Styles
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @return {Object} React Styles
+	 */
+	buttonStyles () {
+		return {
+			'padding-left': 0,
+			'margin-right': 25,
+			'color': '#ffa600',
+		};
+	}
+
+	/**
 	 * Render our [Open TablePlus] Button.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
@@ -171,12 +186,16 @@ export default class TablePlus extends React.Component {
 	render () {
 		if (!this.canConnect()) {
 			return (
-				<TextButton disabled="disabled">{this.getButtonLabel()}</TextButton>
+				<TextButton
+					style={this.buttonStyles()}
+					disabled="true">{this.getButtonLabel()}</TextButton>
 			);
 		}
 
 		return (
-			<TextButton onClick={() => this.openTablePlus()}>{this.getButtonLabel()}</TextButton>
+			<TextButton
+				style={this.buttonStyles()}
+				onClick={() => this.openTablePlus()}>{this.getButtonLabel()}</TextButton>
 		);
 	}
 }
