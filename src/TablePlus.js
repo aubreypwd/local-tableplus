@@ -25,6 +25,11 @@ export default class TablePlus extends React.Component {
 	 */
 	constructor (props) {
 		super(props); // eleveate the props to this.
+
+		this.state = {
+			style: this.stateButtonStyles(),
+			disabled: !this.siteOn(),
+		};
 	}
 
 	/**
@@ -36,6 +41,19 @@ export default class TablePlus extends React.Component {
 	 */
 	getSockFile () {
 		return `${this.props.site.paths.runData}/mysql/mysqld.sock`;
+	}
+
+	/**
+	 * Get the mysqld.sock.lock File.
+	 *
+	 * This file can be used to determine if a site is on or not.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @return {string} The supposed path to the mysqld.sock.lock file.
+	 */
+	getSockLockFile () {
+		return `${this.props.site.paths.runData}/mysql/mysqld.sock.lock`;
 	}
 
 	/**
@@ -151,6 +169,8 @@ export default class TablePlus extends React.Component {
 	/**
 	 * Is the site on, so we can connect to it.
 	 *
+	 * To figure this out a mysql.sock.lock file is created when on.
+	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.0
 	 * @return {void} Nothing.
@@ -158,7 +178,37 @@ export default class TablePlus extends React.Component {
 	 * @TODO Need to figure out a way to detect if I can connect to the DB or not.
 	 */
 	siteOn () {
-		return true;
+		return fs.existsSync(this.getSockLockFile());
+	}
+
+	/**
+	 * What is the state of the button styles?
+	 *
+	 * Depending if the site is on or off, pass back different combinations
+	 * of styles.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @return {Object} Styles
+	 */
+	stateButtonStyles () {
+		return this.canConnect()
+			? { ...this.defaultButtonStyles(), ...{	'color': '#ffa600' } }
+			: this.defaultButtonStyles();
+	}
+
+	/**
+	 * Button styles whether the site is on or off.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @return {Object} Styles
+	 */
+	defaultButtonStyles () {
+		return {
+			'padding-left': 0,
+			'margin-right': 25,
+		};
 	}
 
 	/**
@@ -169,16 +219,7 @@ export default class TablePlus extends React.Component {
 	 * @return {boolean} Test response.
 	 */
 	canConnect () {
-		return this.isMacOS()
-			&& this.hasTablePlus()
-			&& this.siteOn();
-	}
-
-	buttonStyles () {
-		return {
-			'padding-left': 0,
-			'margin-right': 25,
-		};
+		return this.isMacOS() && this.hasTablePlus() && this.siteOn();
 	}
 
 	/**
@@ -192,9 +233,9 @@ export default class TablePlus extends React.Component {
 	render () {
 		return (
 			<TextButton
-				onClick={() => this.openTablePlus()}
-				style={this.canConnect() ? { ...this.buttonStyles(), ...{	'color': '#ffa600' } } : this.buttonStyles() }
-				disabled={!this.canConnect}>{this.getButtonLabel()}</TextButton>
+				disabled={this.state.disabled}
+				style={this.state.style}
+				onClick={() => this.openTablePlus()}>{this.getButtonLabel()}</TextButton>
 		);
 	}
 }
