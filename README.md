@@ -30,6 +30,8 @@ git clone git@github.com:aubreypwd/local-tableplus.git
 
 Then when you run `npm i` you can run `npm run build` or `npm run watch` to develop.
 
+You will have to `brew install watchexec` to run `npm run watch`.
+
 ## Notes
 
 This will override your `/tmp/mysql.sock` file to connect to TablePlus.
