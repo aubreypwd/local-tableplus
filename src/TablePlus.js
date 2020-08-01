@@ -1,10 +1,10 @@
-/* eslint-disable */
+import React from 'react';
 
 import { TextButton } from '@getflywheel/local-components';
 import is from 'electron-is';
 
-const { exec } = require( 'child_process' );
-const fs = require( 'fs' );
+const { exec } = require('child_process');
+const fs = require('fs');
 
 /**
  * Table Plus Compoment
@@ -23,8 +23,8 @@ export default class TablePlus extends React.Component {
 	 * @since 1.0.0
 	 * @param  {Object} props The properties from the <TablePlus> component from renderer.js.
 	 */
-	constructor( props ) {
-		super( props ); // eleveate the props to this.
+	constructor (props) {
+		super(props); // eleveate the props to this.
 	}
 
 	/**
@@ -34,7 +34,7 @@ export default class TablePlus extends React.Component {
 	 * @since 1.0.0
 	 * @return {string} .Sock file in the Database dashboard.
 	 */
-	getSockFile() {
+	getSockFile () {
 		return `${this.props.site.paths.runData}/mysql/mysqld.sock`;
 	}
 
@@ -43,8 +43,10 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.0
+	 *
+	 * @return {void}
 	 */
-	doNothing() {
+	doNothing () {
 		// Silence is golden.
 	}
 
@@ -53,9 +55,9 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.0
-	 * @return {string}
+	 * @return {string} mysql:// URI.
 	 */
-	getTablePlusURI() {
+	getTablePlusURI () {
 		return `mysql://${this.props.site.mysql.user}:${this.props.site.mysql.password}@localhost/${this.props.site.mysql.database}?enviroment=local&name=${this.props.site.name}&safeModeLevel=0&advancedSafeModeLevel=0`;
 	}
 
@@ -65,9 +67,11 @@ export default class TablePlus extends React.Component {
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.0
 	 * @param  {number} time Milliseconds.
+	 *
+	 * @return {void}
 	 */
-	relieveSockFile( time ) {
-		setTimeout( () => fs.unlink( '/tmp/mysql.sock', () => this.doNothing() ), time );
+	relieveSockFile (time) {
+		setTimeout(() => fs.unlink('/tmp/mysql.sock', () => this.doNothing()), time);
 	}
 
 	/**
@@ -75,9 +79,11 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.0
+	 *
+	 * @return {void}
 	 */
-	openURI() {
-		exec( `open "${this.getTablePlusURI()}"`, () => this.relieveSockFile( 2000 ) );
+	openURI () {
+		exec(`open "${this.getTablePlusURI()}"`, () => this.relieveSockFile(2000));
 	}
 
 	/**
@@ -85,10 +91,11 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.0
+	 * @return {void}
 	 */
-	symlinkSockFile() {
-		fs.unlink( '/tmp/mysql.sock', ( err ) => this.doNothing() );
-		fs.symlinkSync( this.getSockFile(), '/tmp/mysql.sock', 'file', this.doNothing );
+	symlinkSockFile () {
+		fs.unlink('/tmp/mysql.sock', () => this.doNothing());
+		fs.symlinkSync(this.getSockFile(), '/tmp/mysql.sock', 'file', this.doNothing);
 	}
 
 	/**
@@ -99,8 +106,9 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since 1.0.0
+	 * @return {void}
 	 */
-	openTablePlus() {
+	openTablePlus () {
 		this.symlinkSockFile();
 		this.openURI();
 	}
@@ -110,7 +118,7 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since 1.0.0
-	 * @return {string}
+	 * @return {string} Test response.
 	 */
 	getButtonLabel () {
 		return 'Open TablePlus';
@@ -121,9 +129,9 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since 1.0.0
-	 * @return {boolean}
+	 * @return {boolean} Test response.
 	 */
-	isMacOS() {
+	isMacOS () {
 		return is.macOS();
 	}
 
@@ -134,10 +142,10 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since 1.0.0
-	 * @return {boolean}
+	 * @return {boolean} Test response.
 	 */
-	hasTablePlus() {
-		return fs.existsSync( '/Applications/TablePlus.app' );
+	hasTablePlus () {
+		return fs.existsSync('/Applications/TablePlus.app');
 	}
 
 	/**
@@ -145,9 +153,9 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since 1.0.0
-	 * @return {boolean}
+	 * @return {boolean} Test response.
 	 */
-	canConnect() {
+	canConnect () {
 		return this.isMacOS()
 			&& this.hasTablePlus();
 	}
@@ -157,9 +165,11 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since 1.0.0
+	 *
+	 * @return {Object} Component.
 	 */
-	render() {
-		if ( ! this.canConnect() ) {
+	render () {
+		if (!this.canConnect()) {
 			return (
 				<TextButton disabled="disabled">{this.getButtonLabel()}</TextButton>
 			);
@@ -169,4 +179,4 @@ export default class TablePlus extends React.Component {
 			<TextButton onClick={() => this.openTablePlus()}>{this.getButtonLabel()}</TextButton>
 		);
 	}
-};
+}
