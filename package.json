@@ -4,12 +4,14 @@
   "version": "1.0.0",
   "author": "Aubrey Portwood",
   "keywords": [
-    "local-addon"
+    "local-addon",
+    "tableplus",
+    "database"
   ],
-  "bgColor": "#ffffff",
-  "icon": "tableplus.png",
+  "bgColor": "#fff39b",
+  "icon": "icon.png",
   "slug": "local-tableplus",
-  "description": "Connect to databases using TablePlus.",
+  "description": "Connect to Local databases using TablePlus.",
   "renderer": "lib/renderer.js",
   "main": "lib/main.js",
   "repository": {
@@ -19,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/getflywheel/local-addon-boilerplate/issues"
   },
-  "license": "GPL",
+  "license": "GPL-3.0",
   "scripts": {
     "build": "tsc",
     "prepare": "tsc",

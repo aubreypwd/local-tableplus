@@ -149,6 +149,19 @@ export default class TablePlus extends React.Component {
 	}
 
 	/**
+	 * Is the site on, so we can connect to it.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @return {void} Nothing.
+	 *
+	 * @TODO Need to figure out a way to detect if I can connect to the DB or not.
+	 */
+	siteOn () {
+		return true;
+	}
+
+	/**
 	 * Test if we have the requirements to connect.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
@@ -157,21 +170,14 @@ export default class TablePlus extends React.Component {
 	 */
 	canConnect () {
 		return this.isMacOS()
-			&& this.hasTablePlus();
+			&& this.hasTablePlus()
+			&& this.siteOn();
 	}
 
-	/**
-	 * Button Styles
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  1.0.0
-	 * @return {Object} React Styles
-	 */
 	buttonStyles () {
 		return {
 			'padding-left': 0,
 			'margin-right': 25,
-			'color': '#ffa600',
 		};
 	}
 
@@ -184,18 +190,10 @@ export default class TablePlus extends React.Component {
 	 * @return {Object} Component.
 	 */
 	render () {
-		if (!this.canConnect()) {
-			return (
-				<TextButton
-					style={this.buttonStyles()}
-					disabled="true">{this.getButtonLabel()}</TextButton>
-			);
-		}
-
 		return (
 			<TextButton
-				style={this.buttonStyles()}
-				onClick={() => this.openTablePlus()}>{this.getButtonLabel()}</TextButton>
+				style={this.canConnect() ? { ...this.buttonStyles(), ...{	'color': '#ffa600' } } : this.buttonStyles() }
+				disabled={this.canConnect ? 'false' : 'true'}>{this.getButtonLabel()}</TextButton>
 		);
 	}
 }
