@@ -24,8 +24,38 @@ export default class TablePlus extends React.Component {
 	 * @param  {Object} props The properties from the <TablePlus> component from renderer.js.
 	 */
 	constructor (props) {
-		super(props); // eleveate the props to this.
+		super(props);
 
+		this.hooks = this.props.context.hooks;
+		this.site = this.props.site;
+		this.context = this.props.context;
+
+		this.addHooks();
+		this.updateState();
+	}
+
+	/**
+	 * Hooks
+	 *
+	 * @TODO Why this no worky.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @return {Void} Nothing
+	 */
+	addHooks () {
+		this.props.context.hooks.addAction('siteStarted', this.updateState);
+		this.props.context.hooks.addAction('siteStopped', this.updateState);
+	}
+
+	/**
+	 * Update the component state.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.0
+	 * @return {Void} Nothing
+	 */
+	updateState () {
 		this.state = {
 			style: this.stateButtonStyles(),
 			disabled: !this.siteOn(),
@@ -40,7 +70,7 @@ export default class TablePlus extends React.Component {
 	 * @return {string} .Sock file in the Database dashboard.
 	 */
 	getSockFile () {
-		return `${this.props.site.paths.runData}/mysql/mysqld.sock`;
+		return `${this.site.paths.runData}/mysql/mysqld.sock`;
 	}
 
 	/**
@@ -53,7 +83,7 @@ export default class TablePlus extends React.Component {
 	 * @return {string} The supposed path to the mysqld.sock.lock file.
 	 */
 	getSockLockFile () {
-		return `${this.props.site.paths.runData}/mysql/mysqld.sock.lock`;
+		return `${this.site.paths.runData}/mysql/mysqld.sock.lock`;
 	}
 
 	/**
@@ -76,7 +106,7 @@ export default class TablePlus extends React.Component {
 	 * @return {string} mysql:// URI.
 	 */
 	getTablePlusURI () {
-		return `mysql://${this.props.site.mysql.user}:${this.props.site.mysql.password}@localhost/${this.props.site.mysql.database}?enviroment=local&name=${this.props.site.name}&safeModeLevel=0&advancedSafeModeLevel=0`;
+		return `mysql://${this.site.mysql.user}:${this.site.mysql.password}@localhost/${this.site.mysql.database}?enviroment=local&name=${this.site.name}&safeModeLevel=0&advancedSafeModeLevel=0`;
 	}
 
 	/**
