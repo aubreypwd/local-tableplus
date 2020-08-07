@@ -1,12 +1,8 @@
 # TablePlus Addon for Local
 
-Only on MacOS for Local 5.x (Lightning)
+Only on MacOS for <img src="https://static.macupdate.com/products/61238/l/local-by-flywheel-logo.png?v=1568340803" style="display:inline" height="16" width="16"> Local 5.x (Lightning)
 
-- [Install](https://github.com/aubreypwd/local-tableplus/releases/tag/v1.0.0)
-
-## Notes
-
-This will override your `/tmp/mysql.sock` file to connect to TablePlus.
+- [Install &rarr](https://github.com/aubreypwd/local-tableplus/releases/tag/v1.0.0)
 
 --------------------
 
