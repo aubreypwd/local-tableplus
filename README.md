@@ -7,6 +7,8 @@
 
 ## Installation
 
+
+
 ## Notes
 
 This will override your `/tmp/mysql.sock` file to connect to TablePlus.
@@ -26,6 +28,10 @@ Then, cd into the repo and run `npm run link` and it will automatically symlink 
 then run `npm run build` or `npm run watch` (requires `watchexec`, install with `brew install watchexec`) to develop.
 
 `master` will be the current development version.
+
+### Packaging for release
+
+Run `npm run dist` to create a package to distribute to release channels.
 
 -------------------------
 
