@@ -27,7 +27,8 @@
     "prepare": "tsc",
     "watch": "watchexec 'npm run build'",
     "link": "sh ./npm/scripts/symlink.sh",
-    "dist": "node node_modules/npm-pack-all --output dist/"
+    "dist": "node node_modules/npm-pack-all --output dist/",
+    "release": "npm run dist"
   },
   "devDependencies": {
     "@getflywheel/eslint-config-local": "1.0.4",
