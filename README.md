@@ -1,13 +1,8 @@
-# Open TablePlus on MacOS for Local "Lightning" 5.x
+# TablePlus Addon for Local
 
+Only on MacOS for Local 5.x (Lightning)
 
-<p style="text-align:center">
-<img src="https://static.macupdate.com/products/61238/l/local-by-flywheel-logo.png?v=1568340803" height="150" width="150" style="display:inline"><img src="https://tableplus.com/resources/favicons/apple-icon.png" height="150" width="150" style="display:inline">
-</p>
-
-## Installation
-
-
+- [Install](https://github.com/aubreypwd/local-tableplus/releases/tag/v1.0.0)
 
 ## Notes
 
