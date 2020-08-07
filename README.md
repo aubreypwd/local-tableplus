@@ -1,6 +1,6 @@
-# Open TablePlus for Local
+# Open TablePlus on MacOS for Local "Lightning" 5.x
 
-Note this is for Local by Flywheel "Lightning" 5.x+
+![](https://tableplus.com/resources/favicons/apple-icon.png)
 
 ## Installation
 
