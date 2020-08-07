@@ -57,10 +57,6 @@ This will override your `/tmp/mysql.sock` file to connect to TablePlus.
 
 # Changelog 
 
-## 1.0.1
-
-- New way to install using `npm run link` after cloning anywhere
-
-## 1.0.0
+## v1.0.0
 
 First version using TablePlus 3.7.0 (330). This version connects to TablePlus by creating symlink from the site's socket file to `/tmp/mysql.sock` which TablePlus connects by default when invoked via a `mysql://` URI.
