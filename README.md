@@ -4,6 +4,20 @@ Note this is for Local by Flywheel "Lightning" 5.x+
 
 ## Installation
 
+There are two ways to install:
+
+### Link
+
+Clone the repo anywhere you want using:
+
+```
+git clone git@github.com:aubreypwd/local-tableplus.git
+```
+
+Then, cd into the repo and run `npm run link` and it will automatically symlink to your Local addons folder and build the package.
+
+### Clone
+
 Until this ends up in the community list, you can clone this repo into `~/Library/Application Support/Local/addons/` using:
 
 ```bash
@@ -39,6 +53,10 @@ This will override your `/tmp/mysql.sock` file to connect to TablePlus.
 -------------------------
 
 # Changelog 
+
+## 1.0.1
+
+- New way to install using `npm run link` after cloning anywhere
 
 ## 1.0.0
 

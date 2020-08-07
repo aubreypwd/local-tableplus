@@ -25,7 +25,8 @@
   "scripts": {
     "build": "tsc",
     "prepare": "tsc",
-    "watch": "watchexec 'npm run build'"
+    "watch": "watchexec 'npm run build'",
+    "link": "sh ./npm/scripts/symlink.sh"
   },
   "devDependencies": {
     "@getflywheel/eslint-config-local": "1.0.4",
