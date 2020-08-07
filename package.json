@@ -26,7 +26,8 @@
     "build": "tsc",
     "prepare": "tsc",
     "watch": "watchexec 'npm run build'",
-    "link": "sh ./npm/scripts/symlink.sh"
+    "link": "sh ./npm/scripts/symlink.sh",
+    "dist": "node node_modules/npm-pack-all --output dist/"
   },
   "devDependencies": {
     "@getflywheel/eslint-config-local": "1.0.4",
@@ -51,6 +52,7 @@
     "dateformat": "^3.0.3",
     "electron-is": "~3.0.0",
     "fs-extra": "^9.0.1",
+    "npm-pack-all": "~1.11.9",
     "prop-types": "^15.6.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
