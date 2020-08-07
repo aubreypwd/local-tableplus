@@ -1,6 +1,6 @@
 # <img src="https://tableplus.com/resources/favicons/apple-icon-180x180.png" style="display:inline" height="32" width="32"> TablePlus Addon for Local
 
-Only on <img src="https://lh3.googleusercontent.com/proxy/qb4yE71EW3HgI7iSim7Lbxf31H1xbU1TmeVMx6ThlM0XlZOBD21qhvkK9bIl5fcKrzpzJIhyYle_REQ3SH6Uai0lSP4bTJd-c9bTJ6KHGfR_YsGFVpWMLgQQ4Xl-A14sOps" style="display:inline" height="16" width="16"> MacOS for <img src="https://static.macupdate.com/products/61238/l/local-by-flywheel-logo.png?v=1568340803" style="display:inline" height="16" width="16"> Local 5.x (Lightning)
+You can use this addon for <img src="https://static.macupdate.com/products/61238/l/local-by-flywheel-logo.png?v=1568340803" style="display:inline" height="16" width="16"> [Local](https://localwp.com/) 5.x ⚡️ on <img src="https://lh3.googleusercontent.com/proxy/qb4yE71EW3HgI7iSim7Lbxf31H1xbU1TmeVMx6ThlM0XlZOBD21qhvkK9bIl5fcKrzpzJIhyYle_REQ3SH6Uai0lSP4bTJd-c9bTJ6KHGfR_YsGFVpWMLgQQ4Xl-A14sOps" style="display:inline" height="16" width="16"> MacOS ONLY to connect to databases using <img src="https://tableplus.com/resources/favicons/apple-icon-180x180.png" style="display:inline" height="16" width="16"> [TablePlus](https://tableplus.com/) with one click.
 
 - [Install &rarr;](https://github.com/aubreypwd/local-tableplus/releases/tag/v1.0.0)
 
