@@ -27,7 +27,7 @@
     "prepare": "tsc",
     "watch": "watchexec 'npm run build'",
     "link": "sh ./npm/scripts/symlink.sh",
-    "dist": "npx npm-pack-all",
+    "dist": "npx npm-pack-all --output dist/",
     "release": "npm run dist"
   },
   "peerDependencies": {
