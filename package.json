@@ -35,20 +35,22 @@
     "react-dom": ">= 16.4.0",
     "react-router-dom": "^4.3.1"
   },
-  "dependencies": {
+  "devDependencies": {
     "@getflywheel/eslint-config-local": "1.0.4",
+    "babel-eslint": "~10.1.0",
+    "eslint": "^5.0.0",
+    "eslint-plugin-import": "~2.22.0",
+    "eslint-plugin-react": "~7.20.6"
+  },
+  "dependencies": {
     "@getflywheel/local": "~5.7.1",
     "@getflywheel/local-components": "^14.0.0",
     "@types/classnames": "~2.2.10",
     "@types/dateformat": "^3.0.1",
     "@types/node": "~12.12.54",
-    "babel-eslint": "~10.1.0",
     "classnames": "^2.2.6",
     "dateformat": "^3.0.3",
     "electron-is": "~3.0.0",
-    "eslint": "^5.0.0",
-    "eslint-plugin-import": "~2.22.0",
-    "eslint-plugin-react": "~7.20.6",
     "fs-extra": "^9.0.1",
     "prop-types": "^15.6.2",
     "react": "~16.13.1",
