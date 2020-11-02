@@ -63,10 +63,20 @@
     "local-by-flywheel": "^5.0.0"
   },
   "bundleDependencies": [
+    "@getflywheel/local",
+    "@getflywheel/local-components",
+    "@types/classnames",
+    "@types/dateformat",
+    "@types/node",
     "classnames",
     "dateformat",
-    "@getflywheel/local-components",
+    "electron-is",
+    "fs-extra",
+    "lodash",
     "prop-types",
-    "lodash"
+    "react",
+    "react-dom",
+    "react-router-dom",
+    "typescript"
   ]
 }
