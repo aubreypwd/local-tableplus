@@ -38,8 +38,7 @@
     "@types/node": "~12.12.54",
     "eslint": "^5.0.0",
     "eslint-plugin-import": "~2.22.0",
-    "eslint-plugin-react": "~7.20.6",
-    "typescript": "~3.9.7"
+    "eslint-plugin-react": "~7.20.6"
   },
   "peerDependencies": {
     "react": ">= 16.4.0",
@@ -56,7 +55,8 @@
     "prop-types": "^15.6.2",
     "react": "~16.13.1",
     "react-dom": "~16.13.1",
-    "react-router-dom": "^5.1.2"
+    "react-router-dom": "^5.1.2",
+    "typescript": "~4.0.5"
   },
   "engines": {
     "local-by-flywheel": "^5.0.0"
