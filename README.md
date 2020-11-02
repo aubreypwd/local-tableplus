@@ -23,11 +23,3 @@ then run `npm run build` or `npm run watch` (requires `watchexec`, install with 
 ### Packaging for release
 
 Run `npm run dist` to create a package to distribute to release channels.
-
--------------------------
-
-# Changelog 
-
-## v1.0.0
-
-First version using TablePlus 3.7.0 (330). This version connects to TablePlus by creating symlink from the site's socket file to `/tmp/mysql.sock` which TablePlus connects by default when invoked via a `mysql://` URI.
