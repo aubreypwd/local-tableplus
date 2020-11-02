@@ -6,7 +6,7 @@ You can use this addon for <img src="https://static.macupdate.com/products/61238
 
 Download the `.tgz` file from a [release](https://github.com/aubreypwd/local-tableplus/releases). Navigate to *Local → Addons → Installed → Install from Disk* and select the `.tgz` file. Enable *TablePlus* and restart Local. 
 
-## Use
+## Usage
 
 Connect to databases just like you would Sequel Pro or Adminer, but with <img src="https://tableplus.com/resources/favicons/apple-icon-180x180.png" height="16" width="16" style="display:inline"> TablePlus!.
 
