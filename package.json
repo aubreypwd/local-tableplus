@@ -59,13 +59,13 @@
     "react-dom": "~16.13.1",
     "react-router-dom": "^5.1.2"
   },
-  "bundledDependencies": [
+  "engines": {
+    "local-by-flywheel": "^5.0.0"
+  },
+  "bundleDependencies": [
     "classnames",
     "dateformat",
     "@getflywheel/local-components",
     "prop-types"
-  ],
-  "engines": {
-    "local-by-flywheel": "^5.0.0"
-  }
+  ]
 }
