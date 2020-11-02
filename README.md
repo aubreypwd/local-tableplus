@@ -10,8 +10,6 @@ Download the `.tgz` file from a [release](https://github.com/aubreypwd/local-tab
 
 Connect to databases just like you would Sequel Pro or Adminer, but with <img src="https://tableplus.com/resources/favicons/apple-icon-180x180.png" height="16" width="16" style="display:inline"> TablePlus!.
 
---------------------
-
 ## Development
 
 Clone the repo anywhere you want using:
