@@ -26,10 +26,6 @@ export default class TablePlus extends React.Component {
 	constructor (props) {
 		super(props);
 
-		this.hooks = this.props.context.hooks;
-		this.site = this.props.site;
-		this.context = this.props.context;
-
 		this.addHooks();
 		this.updateState();
 
@@ -63,8 +59,8 @@ export default class TablePlus extends React.Component {
 	 * @return {Void} Nothing
 	 */
 	addHooks () {
-		this.hooks.addAction('siteStarted', () => this.updateState());
-		this.hooks.addAction('siteStopped', () => this.updateState());
+		this.props.context.hooks.addAction('siteStarted', () => this.updateState());
+		this.props.context.hooks.addAction('siteStopped', () => this.updateState());
 	}
 
 	/**
@@ -91,7 +87,7 @@ export default class TablePlus extends React.Component {
 	 * @return {string} .Sock file in the Database dashboard.
 	 */
 	getSockFile () {
-		return `${this.site.paths.runData}/mysql/mysqld.sock`;
+		return `${this.props.context.environment.userDataPath}/run/${this.props.site.id}/mysql/mysqld.sock`;
 	}
 
 	/**
@@ -104,7 +100,7 @@ export default class TablePlus extends React.Component {
 	 * @return {string} The supposed path to the mysqld.sock.lock file.
 	 */
 	getSockLockFile () {
-		return `${this.site.paths.runData}/mysql/mysqld.sock.lock`;
+		return `${this.props.context.environment.userDataPath}/run/${this.props.site.id}/mysql/mysqld.sock.lock`;
 	}
 
 	/**
@@ -127,20 +123,7 @@ export default class TablePlus extends React.Component {
 	 * @return {string} mysql:// URI.
 	 */
 	getTablePlusURI () {
-		return `mysql://${this.site.mysql.user}:${this.site.mysql.password}@localhost/${this.site.mysql.database}?enviroment=local&name=${this.site.name}&safeModeLevel=0&advancedSafeModeLevel=0`;
-	}
-
-	/**
-	 * After a set amount of time remove the /tmp/mysql.sock file so it can be used for other connections.
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  1.0.0
-	 * @param  {number} time Milliseconds.
-	 *
-	 * @return {void}
-	 */
-	relieveSockFile (time) {
-		setTimeout(() => fs.unlink('/tmp/mysql.sock', () => this.doNothing()), time);
+		return `mysql://${this.props.site.mysql.user}:${this.props.site.mysql.password}@localhost/${this.props.site.mysql.database}?enviroment=local&name=${this.props.site.name}&safeModeLevel=0&advancedSafeModeLevel=0`;
 	}
 
 	/**
@@ -152,7 +135,7 @@ export default class TablePlus extends React.Component {
 	 * @return {void}
 	 */
 	openURI () {
-		exec(`open "${this.getTablePlusURI()}"`, () => this.relieveSockFile(2000));
+		exec(`open "${this.getTablePlusURI()}"`, () => this.doNothing());
 	}
 
 	/**
