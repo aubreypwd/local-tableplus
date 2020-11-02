@@ -27,7 +27,7 @@
     "prepare": "tsc",
     "watch": "watchexec 'npm run build'",
     "link": "sh ./npm/scripts/symlink.sh",
-    "dist": "npm ci && npx npm-pack-all --output dist/",
+    "dist": "mkdir -p dist && npm ci && npx npm-pack-all --output dist/",
     "release": "npm run dist"
   },
   "peerDependencies": {
@@ -66,6 +66,7 @@
     "classnames",
     "dateformat",
     "@getflywheel/local-components",
-    "prop-types"
+    "prop-types",
+    "lodash"
   ]
 }
