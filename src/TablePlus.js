@@ -139,14 +139,24 @@ export default class TablePlus extends React.Component {
 	}
 
 	/**
+	 * Reset /tmp/mysql.lock then symlink the socket file.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.2
+	 * @return {void}
+	 */
+	unlinkAndThenSymlinkTmpSockFile () {
+		fs.unlink('/tmp/mysql.sock', () => this.symlinkTmpSockFile());
+	}
+
+	/**
 	 * Symlink the /tmp/mysql.sock file to the site sock file.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.0
 	 * @return {void}
 	 */
-	symlinkSockFile () {
-		fs.unlink('/tmp/mysql.sock', () => this.doNothing());
+	symlinkTmpSockFile () {
 		fs.symlinkSync(this.getSockFile(), '/tmp/mysql.sock', 'file', this.doNothing);
 	}
 
@@ -161,7 +171,7 @@ export default class TablePlus extends React.Component {
 	 * @return {void}
 	 */
 	openTablePlus () {
-		this.symlinkSockFile();
+		this.unlinkAndThenSymlinkTmpSockFile();
 		this.openURI();
 	}
 
