@@ -73,7 +73,7 @@ export default class TablePlus extends React.Component {
 	updateState () {
 		this.state = {
 			style: this.stateButtonStyles(),
-			disabled: !this.siteOn(),
+			disabled: !this.canConnect(),
 		};
 
 		this.setState(this.state);
@@ -146,7 +146,7 @@ export default class TablePlus extends React.Component {
 	 * @return {void}
 	 */
 	unlinkAndThenSymlinkTmpSockFile () {
-		fs.unlink('/tmp/mysql.sock', () => this.symlinkTmpSockFile());
+		fs.unlinkSync(this.getTmpSockFile(), () => this.symlinkTmpSockFile());
 	}
 
 	/**
@@ -157,7 +157,7 @@ export default class TablePlus extends React.Component {
 	 * @return {void}
 	 */
 	symlinkTmpSockFile () {
-		fs.symlinkSync(this.getSockFile(), '/tmp/mysql.sock', 'file', this.doNothing);
+		fs.symlinkSync(this.getSockFile(), this.getTmpSockFile(), 'file', this.doNothing);
 	}
 
 	/**
@@ -263,7 +263,44 @@ export default class TablePlus extends React.Component {
 	 * @return {boolean} Test response.
 	 */
 	canConnect () {
-		return this.isMacOS() && this.hasTablePlus() && this.siteOn();
+		return this.isMacOS()
+			&& this.hasTablePlus()
+			&& this.siteOn()
+			&& this.canAccessTmpSockFile();
+	}
+
+	/**
+	 * Discover if we can write to the /tmp/mysql.sock file.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  NEXT
+	 * @return {boolean} True if we can or the file isn't there, or false if we can't.
+	 */
+	canAccessTmpSockFile () {
+		const tmpSockFile = this.getTmpSockFile();
+
+		if (!fs.existsSync(tmpSockFile)) {
+			return true; // No file, so we should be able to create one later.
+		}
+
+		let writeable = false;
+
+		fs.accessSync(tmpSockFile, (error) => {
+			writeable = !error;
+		});
+
+		return writeable;
+	}
+
+	/**
+	 * Get the /tmp/mysql.sock file that TablePlus can connect to by default.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  NEXT
+	 * @return {string} Absolute file path.
+	 */
+	getTmpSockFile () {
+		return '/tmp/mysql.sock';
 	}
 
 	/**
