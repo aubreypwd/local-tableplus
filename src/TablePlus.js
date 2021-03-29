@@ -28,7 +28,6 @@ export default class TablePlus extends React.Component {
 
 		this.addHooks();
 		this.updateState();
-
 		this.updateInterval();
 	}
 
@@ -143,10 +142,35 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.2
-	 * @return {void}
+	 * @return {boolean} True if we symlinked it properly.
 	 */
-	unlinkAndThenSymlinkTmpSockFile () {
-		fs.unlinkSync(this.getTmpSockFile(), () => this.symlinkTmpSockFile());
+	maybeUnlinkAndSymlinkTmpSockFile () {
+		if (!this.tmpSockFileExists()) {
+			this.symlinkTmpSockFile(); // Just create the symlink now.
+			return true;
+		}
+
+		// Unlink current file.
+		this.unlinkTmpSockFile();
+
+		// Synlink the file after unlink.
+		this.symlinkTmpSockFile();
+
+		// If we symlinked it then the file will be there.
+		return this.tmpSockFileExists();
+	}
+
+	/**
+	 * Delete the /tmp/mysql.sock file if we can.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.4
+	 * @return {boole} True if the file got deleted.
+	 */
+	unlinkTmpSockFile () {
+		fs.unlinkSync(this.getTmpSockFile(), this.doNothing);
+
+		return this.tmpSockFileExists() === false;
 	}
 
 	/**
@@ -171,7 +195,10 @@ export default class TablePlus extends React.Component {
 	 * @return {void}
 	 */
 	openTablePlus () {
-		this.unlinkAndThenSymlinkTmpSockFile();
+		if (!this.maybeUnlinkAndSymlinkTmpSockFile()) {
+			return; // Something wen't wrong.
+		}
+
 		this.openURI();
 	}
 
@@ -273,30 +300,44 @@ export default class TablePlus extends React.Component {
 	 * Discover if we can write to the /tmp/mysql.sock file.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  NEXT
+	 * @since  1.0.3
 	 * @return {boolean} True if we can or the file isn't there, or false if we can't.
 	 */
 	canAccessTmpSockFile () {
 		const tmpSockFile = this.getTmpSockFile();
 
-		if (!fs.existsSync(tmpSockFile)) {
+		if (!this.tmpSockFileExists()) {
 			return true; // No file, so we should be able to create one later.
 		}
 
 		let writeable = false;
 
-		fs.accessSync(tmpSockFile, (error) => {
-			writeable = !error;
-		});
+		try {
+			const test = fs.accessSync(tmpSockFile, fs.constants.W_OK);
+			writeable = typeof (test) === 'undefined';
+		} catch (error) {
+			writeable = false;
+		}
 
 		return writeable;
+	}
+
+	/**
+	 * Does the /tmp/mysql.sock file exist?
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.4
+	 * @return {boolean} True if it does.
+	 */
+	tmpSockFileExists () {
+		return fs.existsSync(this.getTmpSockFile());
 	}
 
 	/**
 	 * Get the /tmp/mysql.sock file that TablePlus can connect to by default.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  NEXT
+	 * @since  1.0.3
 	 * @return {string} Absolute file path.
 	 */
 	getTmpSockFile () {
