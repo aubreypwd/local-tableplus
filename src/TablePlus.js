@@ -6,6 +6,8 @@ import is from 'electron-is';
 const { exec } = require('child_process');
 const fs = require('fs');
 
+/* eslint-disable no-console */
+
 /**
  * Table Plus Compoment
  *
@@ -29,6 +31,9 @@ export default class TablePlus extends React.Component {
 		this.addHooks();
 		this.updateState();
 		this.updateInterval();
+
+		this.disabled = false;
+		this.isRed = false;
 	}
 
 	/**
@@ -44,8 +49,7 @@ export default class TablePlus extends React.Component {
 	updateInterval () {
 		setInterval(() => {
 			this.updateState();
-			this.forceUpdate();
-		}, 1000);
+		}, 250);
 	}
 
 	/**
@@ -72,10 +76,11 @@ export default class TablePlus extends React.Component {
 	updateState () {
 		this.state = {
 			style: this.stateButtonStyles(),
-			disabled: !this.canConnect(),
+			disabled: !this.canConnect() || this.disabled,
 		};
 
 		this.setState(this.state);
+		this.forceUpdate();
 	}
 
 	/**
@@ -144,20 +149,17 @@ export default class TablePlus extends React.Component {
 	 * @since  1.0.2
 	 * @return {boolean} True if we symlinked it properly.
 	 */
-	maybeUnlinkAndSymlinkTmpSockFile () {
+	setupTmpSockFileForSite () {
 		if (!this.tmpSockFileExists()) {
-			this.symlinkTmpSockFile(); // Just create the symlink now.
-			return true;
+			return this.symlinkTmpSockFile();
 		}
 
-		// Unlink current file.
-		this.unlinkTmpSockFile();
+		if (this.tmpSockFileIsSymlinked()) {
+			return true; // Already symlinked.
+		}
 
-		// Synlink the file after unlink.
-		this.symlinkTmpSockFile();
-
-		// If we symlinked it then the file will be there.
-		return this.tmpSockFileExists();
+		return this.unlinkTmpSockFile()
+			&& this.symlinkTmpSockFile();
 	}
 
 	/**
@@ -165,12 +167,29 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.4
-	 * @return {boole} True if the file got deleted.
+	 * @return {bool} True if the file got deleted.
 	 */
 	unlinkTmpSockFile () {
 		fs.unlinkSync(this.getTmpSockFile(), this.doNothing);
 
-		return this.tmpSockFileExists() === false;
+		const tmpExists = this.tmpSockFileExists();
+
+		if (tmpExists) {
+			this.warn(
+				'Unable to unlink {$file}.'
+					.replace('{$file}', this.getTmpSockFile())
+			);
+		}
+
+		return !tmpExists;
+	}
+
+	error (what) {
+		console.error(what);
+	}
+
+	warn (what) {
+		console.warn(what);
 	}
 
 	/**
@@ -178,10 +197,33 @@ export default class TablePlus extends React.Component {
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
 	 * @since  1.0.0
-	 * @return {void}
+	 * @return {boolean} True if the symlink was setup right.
 	 */
 	symlinkTmpSockFile () {
-		fs.symlinkSync(this.getSockFile(), this.getTmpSockFile(), 'file', this.doNothing);
+		fs.symlinkSync(this.getSockFile(), this.getTmpSockFile(), 'file');
+
+		const symlinked = this.tmpSockFileIsSymlinked();
+
+		if (!symlinked) {
+			this.error(
+				'Could not symlink {$sockFile} to {$tmpFile}.'
+					.replace('{$sockFile}', this.getTmpSockFile())
+					.replace('{$tmpFile}', this.getTmpSockFile())
+			);
+		}
+
+		return symlinked;
+	}
+
+	/**
+	 * Was the symlink successful?
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.5
+	 * @return {boolean} True if it was.
+	 */
+	tmpSockFileIsSymlinked () {
+		return fs.readlinkSync(this.getTmpSockFile()) === this.getSockFile();
 	}
 
 	/**
@@ -191,15 +233,60 @@ export default class TablePlus extends React.Component {
 	 * connection.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 *
 	 * @since 1.0.0
+	 * @since 1.0.5 Will show red on button if ultimately we couldn't do the right thing on click.
+	 *
 	 * @return {void}
 	 */
-	openTablePlus () {
-		if (!this.maybeUnlinkAndSymlinkTmpSockFile()) {
-			return; // Something wen't wrong.
+	clickOpenTablePlus () {
+		if (!this.setupTmpSockFileForSite()) {
+			this.error(
+				"Could not setup {$tmpFile} properly, so can't open TablePlus!"
+					.replace('{$tmpFile}', this.getTmpSockFile())
+			);
+
+			this.flag(true); // Don't disable, but show an error because everything up until this point has said we can click the button.
+
+			return;
 		}
 
 		this.openURI();
+		this.flag(false); // This time no error, change the button back.
+	}
+
+	/**
+	 * Disable the button.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.5
+	 * @return {void}
+	 */
+	disable () {
+		this.disabled = true;
+	}
+
+	/**
+	 * Enable button.
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.5
+	 * @return {void}
+	 */
+	enable () {
+		this.disabled = false;
+	}
+
+	/**
+	 * Make the button red (flagging that there was a bigger error).
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.0.5
+	 * @param  {boolean} on Set to true to make red, false to not.
+	 * @return {void}
+	 */
+	flag (on) {
+		this.isRed = on;
 	}
 
 	/**
@@ -259,13 +346,20 @@ export default class TablePlus extends React.Component {
 	 * of styles.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 *
 	 * @since  1.0.0
+	 * @since  1.0.5 Shows red styles.
+	 *
 	 * @return {Object} Styles
 	 */
 	stateButtonStyles () {
-		return this.canConnect()
-			? { ...this.defaultButtonStyles(), ...{	'color': '#ffa600' } }
-			: this.defaultButtonStyles();
+		if (this.isRed) {
+			return { ...this.defaultButtonStyles(), ...{ 'color': '#cc6565' } };// Red, something bad happened.
+		}
+
+		return this.canConnect() && !this.disabled
+			? { ...this.defaultButtonStyles(), ...{ 'color': '#ffa600' } } // Yellow style.
+			: this.defaultButtonStyles(); // Normal styles.
 	}
 
 	/**
@@ -293,20 +387,24 @@ export default class TablePlus extends React.Component {
 		return this.isMacOS()
 			&& this.hasTablePlus()
 			&& this.siteOn()
-			&& this.canAccessTmpSockFile();
+			&& this.canModifyTmpSockFile();
 	}
 
 	/**
 	 * Discover if we can write to the /tmp/mysql.sock file.
 	 *
 	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 *
 	 * @since  1.0.3
+	 * @since  1.0.5 Modifies whether or not the button is disabled or not.
+	 *
 	 * @return {boolean} True if we can or the file isn't there, or false if we can't.
 	 */
-	canAccessTmpSockFile () {
+	canModifyTmpSockFile () {
 		const tmpSockFile = this.getTmpSockFile();
 
 		if (!this.tmpSockFileExists()) {
+			this.enable();
 			return true; // No file, so we should be able to create one later.
 		}
 
@@ -317,6 +415,17 @@ export default class TablePlus extends React.Component {
 			writeable = typeof (test) === 'undefined';
 		} catch (error) {
 			writeable = false;
+		}
+
+		if (!writeable) {
+			this.error(
+				"{$tmpFile} is not writable, so we can't modify it."
+					.replace('{$tmpFile}', tmpSockFile)
+			);
+
+			this.disable();
+		} else {
+			this.enable();
 		}
 
 		return writeable;
@@ -357,7 +466,7 @@ export default class TablePlus extends React.Component {
 			<TextButton
 				disabled={this.state.disabled}
 				style={this.state.style}
-				onClick={() => this.openTablePlus()}>{this.getButtonLabel()}</TextButton>
+				onClick={() => this.clickOpenTablePlus()}>{this.getButtonLabel()}</TextButton>
 		);
 	}
 }
