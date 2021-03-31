@@ -27,6 +27,7 @@
     "prepare": "tsc",
     "watch": "watchexec 'npm run build'",
     "link": "sh ./npm/scripts/symlink.sh",
+    "unlink": "sh ./npm/scripts/unlink.sh",
     "dist": "rm -Rf *.tgz && node node_modules/npm-pack-all dist/",
     "release": "npm run dist"
   },
