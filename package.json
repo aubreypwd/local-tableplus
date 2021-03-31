@@ -1,7 +1,7 @@
 {
   "name": "local-tableplus",
   "productName": "TablePlus",
-  "version": "1.0.4",
+  "version": "1.0.5-beta.0",
   "author": "Aubrey Portwood",
   "keywords": [
     "local-addon",
