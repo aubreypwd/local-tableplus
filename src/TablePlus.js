@@ -189,10 +189,26 @@ export default class TablePlus extends React.Component {
 		return !tmpExists;
 	}
 
+	/**
+	 * Console out an error
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.5.0
+	 * @param  {mixed} what What to present.
+	 * @return {void}
+	 */
 	error (what) {
 		console.error(what);
 	}
 
+	/**
+	 * Console out a warning
+	 *
+	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
+	 * @since  1.5.0
+	 * @param  {mixed} what What to present.
+	 * @return {void}
+	 */
 	warn (what) {
 		console.warn(what);
 	}
