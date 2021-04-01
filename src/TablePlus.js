@@ -151,7 +151,8 @@ export default class TablePlus extends React.Component {
 	 */
 	setupTmpSockFileForSite () {
 		if (!this.tmpSockFileExists()) {
-			return this.symlinkTmpSockFile();
+			return this.unlinkTmpSockFile()
+				&& this.symlinkTmpSockFile();
 		}
 
 		if (this.tmpSockFileIsSymlinked()) {
@@ -170,7 +171,11 @@ export default class TablePlus extends React.Component {
 	 * @return {bool} True if the file got deleted.
 	 */
 	unlinkTmpSockFile () {
-		fs.unlinkSync(this.getTmpSockFile(), this.doNothing);
+		try {
+			fs.unlinkSync(this.getTmpSockFile(), this.doNothing);
+		} catch (error) {
+			this.doNothing();
+		}
 
 		const tmpExists = this.tmpSockFileExists();
 
