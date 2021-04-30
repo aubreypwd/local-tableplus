@@ -90,7 +90,7 @@ export default class TablePlus extends React.Component {
 	 * @since 1.0.0
 	 * @return {string} .Sock file in the Database dashboard.
 	 */
-	getSockFile () {
+	getLocalSockFile () {
 		return `${this.props.context.environment.userDataPath}/run/${this.props.site.id}/mysql/mysqld.sock`;
 	}
 
@@ -150,54 +150,26 @@ export default class TablePlus extends React.Component {
 	 * @return {boolean} True if we symlinked it properly.
 	 */
 	setupTmpSockFileForSite () {
-		if (this.tmpSockFileIsSymlinked()) {
-			return true; // Already symlinked, yay.
+		try {
+			fs.unlinkSync(this.getTmpSockFile());
+		} catch (err) {
+			/*
+			 * - The file is not unlinkable
+			 * - The file isn't there
+			 *
+			 * Either way we don't care!
+			 *
+			 * Just continue on....
+			 */
 		}
-
-		// /tmp/mysql.sock exists already....
-		if (!this.tmpSockFileExists()) {
-
-			return this.unlinkTmpSockFile() // Try and unlink what's already there.
-			 && this.symlinkTmpSockFile(); // Then re-symlink it.
-		}
-
-		// Synlink over curent file.
-		return this.unlinkTmpSockFile()
-			&& this.symlinkTmpSockFile();
-	}
-
-	/**
-	 * Delete the /tmp/mysql.sock file if we can.
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  1.0.4
-	 * @return {bool} True if the file got deleted.
-	 */
-	unlinkTmpSockFile () {
-		const tmpSockFile = this.getTmpSockFile();
 
 		try {
-			fs.unlinkSync(tmpSockFile, this.doNothing);
-		} catch (error) {
-
-			this.warn(
-				'Could not unlink {$tmpSockFile}.'
-					.replace('{$tmpSockFile}', tmpSockFile)
-			);
-
-			return false;
+			fs.symlinkSync(this.getLocalSockFile(),this.getTmpSockFile());
+		} catch (err) {
+			return false; // Couldn't symlink for ANY reason.
 		}
 
-		const tmpExists = this.tmpSockFileExists();
-
-		if (tmpExists) {
-			this.warn(
-				'Unable to unlink {$file}.'
-					.replace('{$file}', this.getTmpSockFile())
-			);
-		}
-
-		return !tmpExists;
+		return true;
 	}
 
 	/**
@@ -225,58 +197,6 @@ export default class TablePlus extends React.Component {
 	}
 
 	/**
-	 * Symlink the /tmp/mysql.sock file to the site sock file.
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  1.0.0
-	 * @return {boolean} True if the symlink was setup right.
-	 */
-	symlinkTmpSockFile () {
-		try {
-			fs.symlinkSync(this.getSockFile(), this.getTmpSockFile(), 'file');
-		} catch (error) {
-
-			// Some kind of error occured, can't  symlink.
-			return false;
-		}
-
-		const symlinked = this.tmpSockFileIsSymlinked();
-
-		if (!symlinked) {
-			this.error(
-				'Could not symlink {$sockFile} to {$tmpFile}.'
-					.replace('{$sockFile}', this.getTmpSockFile())
-					.replace('{$tmpFile}', this.getTmpSockFile())
-			);
-		}
-
-		return symlinked;
-	}
-
-	/**
-	 * Was the symlink successful?
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 * @since  1.0.5
-	 * @return {boolean} True if it was.
-	 */
-	tmpSockFileIsSymlinked () {
-		let linked = false;
-
-		try {
-
-			// This way the error doesn't get thrown.
-			linked = fs.readlinkSync(this.getTmpSockFile()) === this.getSockFile();
-		} catch (error) {
-
-			// An error thrown means that we couldn't read the symlink, so we can't verify it's linked.
-			return false;
-		}
-
-		return linked;
-	}
-
-	/**
 	 * Open TablePlus when you click the button.
 	 *
 	 * We use the `open` and a `mysql://` URI format to tell TablePlus to open our
@@ -292,7 +212,7 @@ export default class TablePlus extends React.Component {
 	clickOpenTablePlus () {
 		if (!this.setupTmpSockFileForSite()) {
 			this.error(
-				"Could not setup {$tmpFile} properly, so can't open TablePlus!"
+				"Could not setup {$tmpFile} properly, so can't open TablePlus! We suspect we can't overwrite {$tmpFile}, try running: 'sudo rm /tmp/mysql.sock' and trying again."
 					.replace('{$tmpFile}', this.getTmpSockFile())
 			);
 
@@ -436,49 +356,7 @@ export default class TablePlus extends React.Component {
 	canConnect () {
 		return this.isMacOS()
 			&& this.hasTablePlus()
-			&& this.siteOn()
-			&& this.canModifyTmpSockFile();
-	}
-
-	/**
-	 * Discover if we can write to the /tmp/mysql.sock file.
-	 *
-	 * @author Aubrey Portwood <aubrey@webdevstudios.com>
-	 *
-	 * @since  1.0.3
-	 * @since  1.0.5 Modifies whether or not the button is disabled or not.
-	 *
-	 * @return {boolean} True if we can or the file isn't there, or false if we can't.
-	 */
-	canModifyTmpSockFile () {
-		const tmpSockFile = this.getTmpSockFile();
-
-		if (!this.tmpSockFileExists()) {
-			this.enable();
-			return true; // No file, so we should be able to create one later.
-		}
-
-		let writeable = false;
-
-		try {
-			const test = fs.accessSync(tmpSockFile, fs.constants.W_OK);
-			writeable = typeof (test) === 'undefined';
-		} catch (error) {
-			writeable = false;
-		}
-
-		if (!writeable) {
-			this.error(
-				"{$tmpFile} is not writable, so we can't modify it."
-					.replace('{$tmpFile}', tmpSockFile)
-			);
-
-			this.disable();
-		} else {
-			this.enable();
-		}
-
-		return writeable;
+			&& this.siteOn();
 	}
 
 	/**
