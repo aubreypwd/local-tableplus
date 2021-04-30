@@ -150,15 +150,18 @@ export default class TablePlus extends React.Component {
 	 * @return {boolean} True if we symlinked it properly.
 	 */
 	setupTmpSockFileForSite () {
-		if (!this.tmpSockFileExists()) {
-			return this.unlinkTmpSockFile()
-				&& this.symlinkTmpSockFile();
-		}
-
 		if (this.tmpSockFileIsSymlinked()) {
-			return true; // Already symlinked.
+			return true; // Already symlinked, yay.
 		}
 
+		// /tmp/mysql.sock exists already....
+		if (!this.tmpSockFileExists()) {
+
+			return this.unlinkTmpSockFile() // Try and unlink what's already there.
+			 && this.symlinkTmpSockFile(); // Then re-symlink it.
+		}
+
+		// Synlink over curent file.
 		return this.unlinkTmpSockFile()
 			&& this.symlinkTmpSockFile();
 	}
@@ -171,10 +174,18 @@ export default class TablePlus extends React.Component {
 	 * @return {bool} True if the file got deleted.
 	 */
 	unlinkTmpSockFile () {
+		const tmpSockFile = this.getTmpSockFile();
+
 		try {
-			fs.unlinkSync(this.getTmpSockFile(), this.doNothing);
+			fs.unlinkSync(tmpSockFile, this.doNothing);
 		} catch (error) {
-			this.doNothing();
+
+			this.warn(
+				'Could not unlink {$tmpSockFile}.'
+					.replace('{$tmpSockFile}', tmpSockFile)
+			);
+
+			return false;
 		}
 
 		const tmpExists = this.tmpSockFileExists();
@@ -221,7 +232,13 @@ export default class TablePlus extends React.Component {
 	 * @return {boolean} True if the symlink was setup right.
 	 */
 	symlinkTmpSockFile () {
-		fs.symlinkSync(this.getSockFile(), this.getTmpSockFile(), 'file');
+		try {
+			fs.symlinkSync(this.getSockFile(), this.getTmpSockFile(), 'file');
+		} catch (error) {
+
+			// Some kind of error occured, can't  symlink.
+			return false;
+		}
 
 		const symlinked = this.tmpSockFileIsSymlinked();
 
@@ -244,7 +261,19 @@ export default class TablePlus extends React.Component {
 	 * @return {boolean} True if it was.
 	 */
 	tmpSockFileIsSymlinked () {
-		return fs.readlinkSync(this.getTmpSockFile()) === this.getSockFile();
+		let linked = false;
+
+		try {
+
+			// This way the error doesn't get thrown.
+			linked = fs.readlinkSync(this.getTmpSockFile()) === this.getSockFile();
+		} catch (error) {
+
+			// An error thrown means that we couldn't read the symlink, so we can't verify it's linked.
+			return false;
+		}
+
+		return linked;
 	}
 
 	/**
