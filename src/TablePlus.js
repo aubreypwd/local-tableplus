@@ -127,7 +127,10 @@ export default class TablePlus extends React.Component {
 	 * @return {string} mysql:// URI.
 	 */
 	getTablePlusURI () {
-		return `mysql://${this.props.site.mysql.user}:${this.props.site.mysql.password}@localhost/${this.props.site.mysql.database}?enviroment=local&name=${this.props.site.name}&safeModeLevel=0&advancedSafeModeLevel=0`;
+		const name = encodeURIComponent(`${this.props.site.name}`);
+		const path = encodeURIComponent(`${this.props.site.mysql.database}`);
+
+		return `mysql://${this.props.site.mysql.user}:${this.props.site.mysql.password}@localhost/${path}?enviroment=local&name=${name}&safeModeLevel=0&advancedSafeModeLevel=0`;
 	}
 
 	/**
